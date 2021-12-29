@@ -1,11 +1,6 @@
-# buildspace Wave Portal 👋 
+# Wave Portal
 
-### **Welcome!**
-To get started with this course, clone this repo and follow these commands:
+> This project uses Rinkeby test network. Feel free to send a wave message using some fake eth on the Rinkeby network 😉! 
 
-1. Run `npm install` at the root of your directory
-2. Run `npm run start` to start the project
-3. Start coding!
+Wave portal is a web3 app built following the [Buildspace](https://buildspace.so/) project tutorial: [Build a Web3 App with Solidity + Ethereum Smart Contracts](https://buildspace.so/solidity) at [Buildspace](https://buildspace.so/).
 
-### **Questions?**
-Have some questions make sure you head over to your [buildspace Dashboard](https://app.buildspace.so/courses/CO02cf0f1c-f996-4f50-9669-cf945ca3fb0b) and link your Discord account so you can get access to helpful channels and your instructor!
