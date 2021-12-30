@@ -14,7 +14,7 @@ npm run start
 ```
 
 ## Interact with the app
-https://wonderful-fermat-d880d3.netlify.app/ 
+[App demo](https://wonderful-fermat-d880d3.netlify.app/)
 
 **Before you connect your wallet in the above app, make sure to:**
 
