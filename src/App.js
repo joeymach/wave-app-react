@@ -162,10 +162,10 @@ const App = () => {
 	return (
 		<div className="mainContainer">
 			<div className="dataContainer">
-				<div className="header">👋 Welcome onboard Joey land!</div>
+				<div className="header">👋 Welcome onboard!</div>
 				<div className="bio">
-					Hey there! ~ I'm Joey ~ Don't be shy to connect your wallet and wave
-					at me 😉.
+					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave
+					at me 😉.</p>
 				</div>
 				<form onSubmit={wave}>
 					<p className="waveLabel">
@@ -198,16 +198,12 @@ const App = () => {
 					.map((wave, index) => {
 						return (
 							<div
-								style={{
-									backgroundColor: "OldLace",
-									marginTop: "16px",
-									padding: "8px",
-								}}
+								className="allWaves"
 								key={index}
 							>
-								<div>Address: {wave.address}</div>
-								<div>Time: {wave.timestamp.toString()}</div>
-								<div>Message: {wave.message}</div>
+								<div><span className="waveHeadings">Address:</span> {wave.address}</div>
+								<div><span className="waveHeadings">Time:</span> {wave.timestamp.toString()}</div>
+								<div><span className="waveHeadings">Message:</span> {wave.message}</div>
 							</div>
 						);
 					})}
