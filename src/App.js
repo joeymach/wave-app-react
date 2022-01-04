@@ -161,10 +161,15 @@ const App = () => {
 	return (
 		<div className="mainContainer">
 			<div className="dataContainer">
-				<div className="header">👋 Welcome onboard!</div>
+				<div className="header">👋 Welcome onboard! ¯\_(ツ)_/¯</div>
 				<div className="bio">
 					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave at me 😉.</p>
 				</div>
+        {!currentAccount && (
+					<button className="waveButton" onClick={connectWallet}>
+						💰 Connect Wallet
+					</button>
+				)}
 				<form onSubmit={wave}>
 					<p className="waveLabel">Enter your wave message below and wave at me!</p>
 					<textarea
@@ -176,16 +181,12 @@ const App = () => {
 						}}
 						disabled={!currentAccount ? true : false}
 					/>
-					<input className="waveButton" type="submit" value="Wave at Me :)" />
+					<input className="waveButton fullLengthButton" type="submit" value="👋 Wave at Me :)" />
 				</form>
-				{!currentAccount && (
-					<button className="waveButton" onClick={connectWallet}>
-						Connect Wallet
-					</button>
-				)}
+				
 				{waveCount != null && (
 					<div className="waveCount">
-						<p>Total Wave Count: {waveCount}</p>
+						<p>🚀 Total messages sent: {waveCount}</p>
 					</div>
 				)}
 				{allWaves
