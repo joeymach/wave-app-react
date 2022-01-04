@@ -8,7 +8,31 @@ const App = () => {
 	const [allWaves, setAllWaves] = useState([]);
 	const [waveCount, setWaveCount] = useState(null);
 	const [waveMsg, setWaveMsg] = useState("");
-	const contractAddress = "0xA526Deb3F00FBd566b999e589D84DDd409b7b32D";
+	const contractAddress = "0x28E6704F7577cAEAa5B2715446ea5Ce4A241A3Ce";
+
+	useEffect(() => {
+		checkIfWalletIsConnected();
+		getWaveCount();
+		getAllWaves();
+
+		if (window.ethereum) {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
+			wavePortalContract.on("NewWave", (from, timestamp, message) => {
+				console.log("NewWave", from, timestamp, message);
+
+				setAllWaves((prevState) => [
+					...prevState,
+					{
+						address: from,
+						timestamp: new Date(timestamp * 1000),
+						message: message,
+					},
+				]);
+			});
+		}
+	}, []);
 
 	useEffect(() => {
 		checkIfWalletIsConnected();
@@ -47,11 +71,7 @@ const App = () => {
 			if (ethereum) {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
-				const wavePortalContract = new ethers.Contract(
-					contractAddress,
-					wavePortal.abi,
-					signer
-				);
+				const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
 
 				let count = await wavePortalContract.getTotalWaves();
 				setWaveCount(count.toNumber());
@@ -68,11 +88,7 @@ const App = () => {
 			if (window.ethereum) {
 				const provider = new ethers.providers.Web3Provider(window.ethereum);
 				const signer = provider.getSigner();
-				const wavePortalContract = new ethers.Contract(
-					contractAddress,
-					wavePortal.abi,
-					signer
-				);
+				const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
 
 				const waves = await wavePortalContract.getAllWaves();
 
@@ -86,19 +102,6 @@ const App = () => {
 				});
 
 				setAllWaves(wavesCleaned);
-
-				wavePortalContract.on("NewWave", (from, timestamp, message) => {
-					console.log("NewWave", from, timestamp, message);
-
-					setAllWaves((prevState) => [
-						...prevState,
-						{
-							address: from,
-							timestamp: new Date(timestamp * 1000),
-							message: message,
-						},
-					]);
-				});
 			} else {
 				console.log("Ethereum object doesn't exist!");
 			}
@@ -135,11 +138,7 @@ const App = () => {
 			if (ethereum) {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
-				const wavePortalContract = new ethers.Contract(
-					contractAddress,
-					wavePortal.abi,
-					signer
-				);
+				const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
 
 				const waveTxn = await wavePortalContract.wave(waveMsg, {
 					gasLimit: 300000,
@@ -164,13 +163,10 @@ const App = () => {
 			<div className="dataContainer">
 				<div className="header">👋 Welcome onboard!</div>
 				<div className="bio">
-					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave
-					at me 😉.</p>
+					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave at me 😉.</p>
 				</div>
 				<form onSubmit={wave}>
-					<p className="waveLabel">
-						Enter your wave message below and wave at me!
-					</p>
+					<p className="waveLabel">Enter your wave message below and wave at me!</p>
 					<textarea
 						rows="5"
 						className="waveTextbox"
@@ -187,7 +183,7 @@ const App = () => {
 						Connect Wallet
 					</button>
 				)}
-				{waveCount && (
+				{waveCount != null && (
 					<div className="waveCount">
 						<p>Total Wave Count: {waveCount}</p>
 					</div>
@@ -197,13 +193,16 @@ const App = () => {
 					.reverse()
 					.map((wave, index) => {
 						return (
-							<div
-								className="allWaves"
-								key={index}
-							>
-								<div><span className="waveHeadings">Address:</span> {wave.address}</div>
-								<div><span className="waveHeadings">Time:</span> {wave.timestamp.toString()}</div>
-								<div><span className="waveHeadings">Message:</span> {wave.message}</div>
+							<div className="allWaves" key={index}>
+								<div>
+									<span className="waveHeadings">Address:</span> {wave.address}
+								</div>
+								<div>
+									<span className="waveHeadings">Time:</span> {wave.timestamp.toString()}
+								</div>
+								<div>
+									<span className="waveHeadings">Message:</span> {wave.message}
+								</div>
 							</div>
 						);
 					})}
