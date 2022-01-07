@@ -21,7 +21,7 @@ const App = () => {
 			const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
 			wavePortalContract.on("NewWave", (from, timestamp, message, prizeWon) => {
 				console.log("NewWave", from, timestamp, message, prizeWon);
-        
+
 				setAllWaves((prevState) => [
 					...prevState,
 					{
@@ -32,11 +32,11 @@ const App = () => {
 					},
 				]);
 
-        if (ethers.utils.formatEther(prizeWon) > 0) {
-          alert(`CONGRATS on winning ${ethers.utils.formatEther(prizeWon)} eth! Wave message successful!`)
-        } else {
-          alert("Success! Wave message sent!");
-        }
+				if (ethers.utils.formatEther(prizeWon) > 0) {
+					alert(`CONGRATS on winning ${ethers.utils.formatEther(prizeWon)} eth! Wave message successful!`);
+				} else {
+					alert("Success! Wave message sent!");
+				}
 			});
 		}
 	}, []);
