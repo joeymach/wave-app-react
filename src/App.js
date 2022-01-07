@@ -8,7 +8,7 @@ const App = () => {
 	const [allWaves, setAllWaves] = useState([]);
 	const [waveCount, setWaveCount] = useState(null);
 	const [waveMsg, setWaveMsg] = useState("");
-	const contractAddress = "0x28E6704F7577cAEAa5B2715446ea5Ce4A241A3Ce";
+	const contractAddress = "0xc35371D4caC6997CF6d3F875a5bb6F6F6Ea7643d";
 
 	useEffect(() => {
 		checkIfWalletIsConnected();
@@ -19,17 +19,24 @@ const App = () => {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const signer = provider.getSigner();
 			const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
-			wavePortalContract.on("NewWave", (from, timestamp, message) => {
-				console.log("NewWave", from, timestamp, message);
-
+			wavePortalContract.on("NewWave", (from, timestamp, message, prizeWon) => {
+				console.log("NewWave", from, timestamp, message, prizeWon);
+        
 				setAllWaves((prevState) => [
 					...prevState,
 					{
 						address: from,
 						timestamp: new Date(timestamp * 1000),
 						message: message,
+						prize: ethers.utils.formatEther(prizeWon),
 					},
 				]);
+
+        if (ethers.utils.formatEther(prizeWon) > 0) {
+          alert(`CONGRATS on winning ${ethers.utils.formatEther(prizeWon)} eth! Wave message successful!`)
+        } else {
+          alert("Success! Wave message sent!");
+        }
 			});
 		}
 	}, []);
@@ -98,6 +105,7 @@ const App = () => {
 						address: wave.waver,
 						timestamp: new Date(wave.timestamp * 1000),
 						message: wave.message,
+						prize: ethers.utils.formatEther(wave.prizeWon),
 					});
 				});
 
@@ -149,7 +157,6 @@ const App = () => {
 				console.log("Mined -- ", waveTxn.hash);
 
 				await getWaveCount();
-				alert("Success! Wave message sent!");
 			} else {
 				console.log("Ethereum object doesn't exist!");
 			}
@@ -165,13 +172,14 @@ const App = () => {
 				<div className="bio">
 					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave at me 😉.</p>
 				</div>
-        {!currentAccount && (
+				{!currentAccount && (
 					<button className="waveButton" onClick={connectWallet}>
 						💰 Connect Wallet
 					</button>
 				)}
 				<form onSubmit={wave}>
 					<p className="waveLabel">Enter your wave message below and wave at me!</p>
+					<p>ps: every time you wave, you can win anywhere between 0.001 - 0.005 fake eth</p>
 					<textarea
 						rows="5"
 						className="waveTextbox"
@@ -183,7 +191,7 @@ const App = () => {
 					/>
 					<input className="waveButton fullLengthButton" type="submit" value="👋 Wave at Me :)" />
 				</form>
-				
+
 				{waveCount != null && (
 					<div className="waveCount">
 						<p>🚀 Total messages sent: {waveCount}</p>
@@ -203,6 +211,9 @@ const App = () => {
 								</div>
 								<div>
 									<span className="waveHeadings">Message:</span> {wave.message}
+								</div>
+								<div>
+									<span className="waveHeadings">Eth Won:</span> {wave.prize} eth
 								</div>
 							</div>
 						);
