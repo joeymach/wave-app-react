@@ -179,7 +179,7 @@ const App = () => {
 				)}
 				<form onSubmit={wave}>
 					<p className="waveLabel">Enter your wave message below and wave at me!</p>
-					<p>ps: every time you wave, you can win anywhere between 0.001 - 0.005 fake eth</p>
+					<p>ps: every time you wave, you can win anywhere between 0.0001 - 0.0005 fake eth</p>
 					<textarea
 						rows="5"
 						className="waveTextbox"
