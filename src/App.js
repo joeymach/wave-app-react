@@ -171,6 +171,7 @@ const App = () => {
 				<div className="header">👋 Welcome onboard! ¯\_(ツ)_/¯</div>
 				<div className="bio">
 					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave at me 😉.</p>
+					<p>ps: every time you wave, you can win between 0.0001 - 0.0005 fake eth</p>
 				</div>
 				{!currentAccount && (
 					<button className="waveButton" onClick={connectWallet}>
@@ -179,7 +180,6 @@ const App = () => {
 				)}
 				<form onSubmit={wave}>
 					<p className="waveLabel">Enter your wave message below and wave at me!</p>
-					<p>ps: every time you wave, you can win between 0.0001 - 0.0005 fake eth</p>
 					<textarea
 						rows="5"
 						className="waveTextbox"
