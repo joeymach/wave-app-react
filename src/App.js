@@ -1,13 +1,18 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "./App.css";
 import wavePortal from "./utils/WavePortal.json";
+
+import Wave from "./components/Wave";
+import AllWaves from "./components/AllWaves";
+import Header from "./components/Header";
+import ConnectWallet from "./components/ConnectWallet";
+import WaveCount from "./components/WaveCount";
 
 const App = () => {
 	const [currentAccount, setCurrentAccount] = useState("");
 	const [allWaves, setAllWaves] = useState([]);
 	const [waveCount, setWaveCount] = useState(null);
-	const [waveMsg, setWaveMsg] = useState("");
 	const contractAddress = "0xc35371D4caC6997CF6d3F875a5bb6F6F6Ea7643d";
 
 	useEffect(() => {
@@ -50,7 +55,6 @@ const App = () => {
 	const checkIfWalletIsConnected = async () => {
 		try {
 			const { ethereum } = window;
-
 			if (!ethereum) {
 				console.log("Make sure you have metamask!");
 				return;
@@ -74,7 +78,6 @@ const App = () => {
 	const getWaveCount = async () => {
 		try {
 			const { ethereum } = window;
-
 			if (ethereum) {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
@@ -108,7 +111,6 @@ const App = () => {
 						prize: ethers.utils.formatEther(wave.prizeWon),
 					});
 				});
-
 				setAllWaves(wavesCleaned);
 			} else {
 				console.log("Ethereum object doesn't exist!");
@@ -121,45 +123,15 @@ const App = () => {
 	const connectWallet = async () => {
 		try {
 			const { ethereum } = window;
-
 			if (!ethereum) {
 				alert("Get MetaMask!");
 				return;
 			}
-
 			const accounts = await ethereum.request({
 				method: "eth_requestAccounts",
 			});
-
 			alert(`Account Connected: ${accounts[0]}`);
 			setCurrentAccount(accounts[0]);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const wave = async (event) => {
-		event.preventDefault();
-		try {
-			const { ethereum } = window;
-
-			if (ethereum) {
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const wavePortalContract = new ethers.Contract(contractAddress, wavePortal.abi, signer);
-
-				const waveTxn = await wavePortalContract.wave(waveMsg, {
-					gasLimit: 300000,
-				});
-				console.log("Mining...", waveTxn.hash);
-
-				await waveTxn.wait();
-				console.log("Mined -- ", waveTxn.hash);
-
-				await getWaveCount();
-			} else {
-				console.log("Ethereum object doesn't exist!");
-			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -168,56 +140,11 @@ const App = () => {
 	return (
 		<div className="mainContainer">
 			<div className="dataContainer">
-				<div className="header">👋 Welcome onboard! ¯\_(ツ)_/¯</div>
-				<div className="bio">
-					<p>Hey there! ~ jojo here ~ don't be shy to connect your wallet and wave at me 😉.</p>
-					<p>ps: every time you wave, you can win between 0.0001 - 0.0005 fake eth</p>
-				</div>
-				{!currentAccount && (
-					<button className="waveButton" onClick={connectWallet}>
-						💰 Connect Wallet
-					</button>
-				)}
-				<form onSubmit={wave}>
-					<p className="waveLabel">Enter your wave message below and wave at me!</p>
-					<textarea
-						rows="5"
-						className="waveTextbox"
-						placeholder="Type your wave message..."
-						onChange={(event) => {
-							setWaveMsg(event.target.value);
-						}}
-						disabled={!currentAccount ? true : false}
-					/>
-					<input className="waveButton fullLengthButton" type="submit" value="👋 Wave at Me :)" />
-				</form>
-
-				{waveCount != null && (
-					<div className="waveCount">
-						<p>🚀 Total messages sent: {waveCount}</p>
-					</div>
-				)}
-				{allWaves
-					.slice(0)
-					.reverse()
-					.map((wave, index) => {
-						return (
-							<div className="allWaves" key={index}>
-								<div>
-									<span className="waveHeadings">Address:</span> {wave.address}
-								</div>
-								<div>
-									<span className="waveHeadings">Time:</span> {wave.timestamp.toString()}
-								</div>
-								<div>
-									<span className="waveHeadings">Message:</span> {wave.message}
-								</div>
-								<div>
-									<span className="waveHeadings">Eth Won:</span> {wave.prize} eth
-								</div>
-							</div>
-						);
-					})}
+				<Header />
+				<ConnectWallet currentAccount={currentAccount} connectWallet={connectWallet} />
+				<Wave getWaveCount={getWaveCount} currentAccount={currentAccount} contractAddress={contractAddress} wavePortal={wavePortal} />
+				<WaveCount waveCount={waveCount} />
+				<AllWaves allWaves={allWaves} />
 			</div>
 		</div>
 	);
